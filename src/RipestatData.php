@@ -20,19 +20,10 @@ class RipestatData
      * @param string $hostname
      * @return void
      */
-    public function getDomainWhoIs($hostname)
+    public function domainWhoIs($hostname)
     {
         $this->endpoint = 'whois';
-
-        $ips = gethostbynamel($hostname);
-
-        if (!$ips) {
-            return;
-        }
-
-        foreach ($ips as $ip) {
-            $this->lookup($ip);
-        }
+        $this->getIpLoopFromHostnames($hostname);
     }
 
     /**
@@ -43,10 +34,58 @@ class RipestatData
      * @param string $hostname
      * @return void
      */
-    public function getDnsChain($hostname)
+    public function dnsChain($hostname)
     {
         $this->endpoint = 'dns-chain';
         $this->lookup($hostname);
+    }
+
+    /**
+     * Returns details of reverse DNS delegations
+     * for IP prefixes in the RIPE region.
+     *
+     * @param string $hostname
+     * @return void
+     */
+    public function reverseDns($hostname)
+    {
+
+        $this->endpoint = 'reverse-dns';
+        $this->getIpLoopFromHostnames($hostname);
+    }
+
+    /**
+     * A simple lookup for the reverse DNS info
+     * against a single IP address.
+     *
+     * @param string $hostname
+     * @return void
+     */
+    public function reverseDnsIP($hostname)
+    {
+
+        $this->endpoint = 'reverse-dns-ip';
+        $this->getIpLoopFromHostnames($hostname);
+    }
+
+    /**
+     * Looks up an array of IPS related to a given hostname
+     *
+     * @param string $hostname
+     * @return void
+     */
+    protected function getIpLoopFromHostnames($hostname)
+    {
+
+        $ips = gethostbynamel($hostname);
+
+        if (!$ips) {
+            return;
+        }
+
+        foreach ($ips as $ip) {
+            $this->lookup($ip);
+        }
     }
 
     protected function lookup($resource)

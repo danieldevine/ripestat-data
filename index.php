@@ -6,6 +6,9 @@ use \Coderjerk\RipestatData\RipestatData;
 
 $ripestat = new RipestatData;
 
-// $ripestat->getDomainWhoIs('mavericklabs.ie');
+// $ripestat->domainWhoIs('coderjerk.com');
 
-$ripestat->getDnsChain('flern');
+// $ripestat->dnsChain('coderjerk.com');
+
+// $ripestat->reverseDns('coderjerk.com');
+$ripestat->reverseDnsIP('www.coderjerk.com');
