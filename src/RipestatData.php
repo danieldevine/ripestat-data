@@ -4,8 +4,6 @@ namespace Coderjerk\RipestatData;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\ServerException;
 
 class RipestatData
 {
@@ -28,7 +26,7 @@ class RipestatData
      * relevant Regional Internet Registry and Routing Registry.
      *
      * @param string $hostname
-     * @return void
+     * @return array|exception
      */
     public function domainWhoIs($hostname)
     {
@@ -42,7 +40,7 @@ class RipestatData
      * starting form either a hostname or an IP address.
      *
      * @param string $hostname
-     * @return void
+     * @return array|exception
      */
     public function dnsChain($hostname)
     {
@@ -63,7 +61,7 @@ class RipestatData
      * the data is being updated once a week on Tuesday.
      *
      * @param string $hostname
-     * @return void
+     * @return array|exception
      */
     public function maxmindGeoLite($hostname)
     {
@@ -76,7 +74,7 @@ class RipestatData
      * for IP prefixes in the RIPE region.
      *
      * @param string $hostname
-     * @return void
+     * @return array|exception
      */
     public function reverseDns($hostname)
     {
@@ -90,13 +88,14 @@ class RipestatData
      * against a single IP address.
      *
      * @param string $hostname
-     * @return void
+     * @return array|exception
      */
     public function reverseDnsIP($hostname)
     {
 
         $this->endpoint = 'reverse-dns-ip';
-        $this->getIpLoopFromHostnames($hostname);
+        $data = $this->getIpLoopFromHostnames($hostname);
+        return $data;
     }
 
     /**
@@ -106,7 +105,7 @@ class RipestatData
      * further levels would have to be retrieved iteratively.
      *
      * @param string $hostname
-     * @return void
+     * @return array|exception
      */
     public function addressSpaceHierarchy($hostname)
     {
@@ -117,22 +116,23 @@ class RipestatData
     /**
      * Returns the IP address of the requester
      *
-     * @return void
+     * @return array|exception
      */
     public function whatsMyIp()
     {
         $this->endpoint = 'whats-my-ip';
-        $this->lookup();
+        return $this->lookup();
     }
 
     /**
      * Looks up an array of IPS related to a given hostname
      *
      * @param string $hostname
-     * @return void
+     * @return array|exception
      */
     protected function getIpLoopFromHostnames($hostname)
     {
+        $data = [];
 
         $ips = gethostbynamel($hostname);
 
@@ -141,10 +141,19 @@ class RipestatData
         }
 
         foreach ($ips as $ip) {
-            $this->lookup($ip);
+            $lookup = $this->lookup($ip);
+            array_push($data, $lookup);
         }
+
+        return $data;
     }
 
+    /**
+     * Performs the API Call
+     *
+     * @param boolean $resource
+     * @return array|exception
+     */
     protected function lookup($resource = false)
     {
         try {
@@ -156,11 +165,11 @@ class RipestatData
                 $url = "{$url}?resource={$resource}";
             }
 
-            $response  = $client->request('GET', $url);
+            $response = $client->request('GET', $url);
 
-            d(json_decode($response->getBody()->getContents()));
+            return json_decode($response->getBody());
         } catch (ClientException $e) {
-            d($e->getResponse()->getBody()->getContents());
+            return $e->getResponse()->getBody()->getContents();
         }
     }
 }

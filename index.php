@@ -9,5 +9,15 @@ $ripestat = new RipestatData;
 // $ripestat->domainWhoIs('coderjerk.com');
 // $ripestat->dnsChain('coderjerk.com');
 // $ripestat->reverseDns('coderjerk.com');
-// $ripestat->reverseDnsIP('www.coderjerk.com');
-$ripestat->whatsMyIp();
+$reverseDnsIps = $ripestat->reverseDnsIP('coderjerk.com');
+$ips = $ripestat->whatsMyIp();
+
+foreach ($reverseDnsIps as $ip) {
+    $results = $ip->data->result;
+
+    foreach ($results as $result) {
+        echo "<div>{$result}</div>";
+    }
+}
+
+echo "<div>{$ips->data->ip}</div>";
