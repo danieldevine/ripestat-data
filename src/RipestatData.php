@@ -26,7 +26,6 @@ class RipestatData
      * relevant Regional Internet Registry and Routing Registry.
      *
      * @param string $hostname
-     * @return array|exception
      */
     public function domainWhoIs($hostname)
     {
@@ -40,7 +39,6 @@ class RipestatData
      * starting form either a hostname or an IP address.
      *
      * @param string $hostname
-     * @return array|exception
      */
     public function dnsChain($hostname)
     {
@@ -61,7 +59,6 @@ class RipestatData
      * the data is being updated once a week on Tuesday.
      *
      * @param string $hostname
-     * @return array|exception
      */
     public function maxmindGeoLite($hostname)
     {
@@ -74,7 +71,6 @@ class RipestatData
      * for IP prefixes in the RIPE region.
      *
      * @param string $hostname
-     * @return array|exception
      */
     public function reverseDns($hostname)
     {
@@ -88,7 +84,6 @@ class RipestatData
      * against a single IP address.
      *
      * @param string $hostname
-     * @return array|exception
      */
     public function reverseDnsIP($hostname)
     {
@@ -105,7 +100,6 @@ class RipestatData
      * further levels would have to be retrieved iteratively.
      *
      * @param string $hostname
-     * @return array|exception
      */
     public function addressSpaceHierarchy($hostname)
     {
@@ -116,7 +110,6 @@ class RipestatData
     /**
      * Returns the IP address of the requester
      *
-     * @return array|exception
      */
     public function whatsMyIp()
     {
@@ -128,7 +121,6 @@ class RipestatData
      * Looks up an array of IPS related to a given hostname
      *
      * @param string $hostname
-     * @return array|exception
      */
     protected function getIpLoopFromHostnames($hostname)
     {
@@ -152,7 +144,6 @@ class RipestatData
      * Performs the API Call
      *
      * @param boolean $resource
-     * @return array|exception
      */
     protected function lookup($resource = false)
     {
