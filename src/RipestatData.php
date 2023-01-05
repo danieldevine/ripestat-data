@@ -9,9 +9,19 @@ use GuzzleHttp\Exception\ServerException;
 
 class RipestatData
 {
-    protected ?string $base_url = 'https://stat.ripe.net/data/';
+    /**
+     * The Base URL for all queries
+     *
+     * @var string
+     */
+    protected $base_url = 'https://stat.ripe.net/data/';
 
-    public ?string $endpoint;
+    /**
+     * The api endpoint
+     *
+     * @var string
+     */
+    public $endpoint;
 
     /**
      * This data call returns whois information from the
@@ -38,6 +48,27 @@ class RipestatData
     {
         $this->endpoint = 'dns-chain';
         $this->lookup($hostname);
+    }
+
+    /**
+     * returns geolocation information for the given IP space
+     * based on MaxMind's GeoLite2 data source.
+     *
+     * Prefix information (IPv4/IPv6) is based on GeoLite2 data
+     * created by MaxMind, which is Copyright 2021 MaxMind, Inc. All Rights Reserved.
+     * Please consult MaxMind's license (opens new window)before using
+     * this data for non-internal projects. For details on the accuracy
+     * of this data, please visit MaxMind's product website. According to
+     *  information given on Maxmind's webpage (November 2019),
+     * the data is being updated once a week on Tuesday.
+     *
+     * @param string $hostname
+     * @return void
+     */
+    public function maxmindGeoLite($hostname)
+    {
+        $this->endpoint = 'maxmind-geo-lite';
+        $this->getIpLoopFromHostnames($hostname);
     }
 
     /**
@@ -69,6 +100,32 @@ class RipestatData
     }
 
     /**
+     * Returns address space objects (inetnum or inet6num) from
+     * the RIPE Database related to the queried resource.
+     * Less- and more-specific results are first-level only,
+     * further levels would have to be retrieved iteratively.
+     *
+     * @param string $hostname
+     * @return void
+     */
+    public function addressSpaceHierarchy($hostname)
+    {
+        $this->endpoint = 'address-space-hierarchy';
+        $this->getIpLoopFromHostnames($hostname);
+    }
+
+    /**
+     * Returns the IP address of the requester
+     *
+     * @return void
+     */
+    public function whatsMyIp()
+    {
+        $this->endpoint = 'whats-my-ip';
+        $this->lookup();
+    }
+
+    /**
      * Looks up an array of IPS related to a given hostname
      *
      * @param string $hostname
@@ -88,12 +145,16 @@ class RipestatData
         }
     }
 
-    protected function lookup($resource)
+    protected function lookup($resource = false)
     {
         try {
             $client = new Client();
 
-            $url = $this->base_url . "/" . $this->endpoint . "/data.json?resource={$resource}";
+            $url = $this->base_url . "/" . $this->endpoint . "/data.json";
+
+            if ($resource) {
+                $url = "{$url}?resource={$resource}";
+            }
 
             $response  = $client->request('GET', $url);
 
