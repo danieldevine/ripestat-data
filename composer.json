@@ -1,0 +1,22 @@
+{
+    "name": "coderjerk/ripestat-data",
+    "description": "Package for interacting with the RIPEstat Data API in PHP",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Coderjerk\\RipestatData\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Dan Devine",
+            "email": "dandevine0@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "vlucas/phpdotenv": "^5.2",
+        "symfony/var-dumper": "^5.1",
+        "phpunit/phpunit": "^9.5"
+    }
+}
